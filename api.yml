@@ -1,0 +1,235 @@
+#Test with: http://editor.swagger.io/
+
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Microservice for BooksList
+  description: Python + MongoDB
+
+host: PENDIENTE
+
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+
+  /api/v1/booklist:
+    post:
+      summary: Creates a new BookList
+      operationId: create_booklist
+      parameters:
+        - name: course
+          in: body
+          required: true
+          description: Course Object
+          schema:
+            $ref: '#/definitions/BookListInput'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+    get:
+      summary: Returns all BookList
+      operationId: get_all_booklist
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/BookListList'
+        '500':
+          description: Internal Server Error
+  
+  /api/v1/booklist/{user_id}:
+    get:
+      summary: Returns a list BookList with the given user_id
+      operationId: get_user_booklist
+      parameters:
+        - name: user_id
+          in: path
+          description: The user_id of the booklists to be returned
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/BookListList'
+        '404':
+          description: Not Found
+        '500':
+          description: unexpected error
+  
+  /api/v1/booklist/{user_id}/{name}:
+    get:
+      summary: Returns a BookList with the given user_id and name
+      operationId: get_booklist
+      parameters:
+        - name: user_id
+          in: path
+          description: The user_id of the booklist to be returned
+          required: true
+          type: integer
+        - name: name
+          in: path
+          description: The name of the booklist to be returned
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/BookList'
+        '404':
+          description: Not Found
+        '406':
+          description: Not Acceptable (Invalid Params)
+        '500':
+          description: unexpected error
+
+    put:
+      summary: Updates a BookList with the given user_id and name
+      operationId: update_booklist
+      parameters:
+        - name: user_id
+          in: path
+          description: The user_id of the booklist to be returned
+          required: true
+          type: integer
+        - name: name
+          in: path
+          description: The name of the booklist to be returned
+          required: true
+          type: string
+        - name: course
+          in: body
+          required: true
+          description: Booklist Object
+          schema:
+            $ref: '#/definitions/BooklistInputAlternative'
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '400':
+          description: Bad Request
+        '500':
+          description: unexpected error
+
+    delete:
+      summary: Deletes a Booklist with the given user_id and name
+      operationId: remove_booklist
+      parameters:
+        - name: user_id
+          in: path
+          description: The user_id of the booklist to be returned
+          required: true
+          type: integer
+        - name: name
+          in: path
+          description: The name of the booklist to be returned
+          required: true
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+        '500':
+          description: unexpected error
+  /api/v1/booklist/{user_id}/{name}/{book}:
+    post:
+      summary: Add a book to an existing list
+      operationId: add_book
+      parameters:
+        - name: user_id
+          in: path
+          description: The user_id of the booklist to be returned
+          required: true
+          type: integer
+        - name: name
+          in: path
+          description: The name of the booklist to be returned
+          required: true
+          type: string
+        - name: book
+          in: path
+          description: The book_id of the book to add
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Ok
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '406':
+            description: Not Acceptable (Invalid Params)
+        '500':
+          description: unexpected error
+
+definitions:
+
+  # BookList
+  BookList:
+    type: object
+    properties:
+      name:
+        type: string
+      user_id:
+        type: string
+      user:
+        type: string
+      books:
+        type: array
+        items:
+          type: integer
+      date_creation:
+        type: string
+      date_update:
+        type: string
+      
+
+  BookListInput:
+    type: object
+    properties:
+      name:
+        type: string
+      user_id:
+        type: string
+      user:
+        type: string
+      books:
+        type: array
+        items:
+          type: integer
+
+  BooklistInputAlternative:
+    type: object
+    properties:
+      new_name:
+        type: string
+      books:
+        type: array
+        items:
+          $ref: integer
+
+  BookListList:
+    type: object
+    required:
+      - list
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/BookList'
+
