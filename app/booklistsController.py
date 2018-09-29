@@ -14,18 +14,6 @@ db = client.restfulapi
 # Select the collection
 collection = db.booklist
 
-@app.route("/")
-def get_initial_response():
-    # Message to the user
-    message = {
-        'apiVersion': 'v1.0',
-        'status': '200',
-        'message': 'API BookList'
-    }
-    resp = jsonify(message)
-    return resp
-
-
 @app.route("/api/v1/booklist", methods=['POST'])
 def create_booklist():
     """
@@ -42,7 +30,6 @@ def create_booklist():
                 raise 
 
             books = request.json['books']
-
             for bk in books:
                 if not(isinstance(bk,int)):
                     raise
@@ -52,21 +39,28 @@ def create_booklist():
             date_update = date_creation
             
             if collection.find({'name': name,'user_id': user_id,}).count() > 0:
-                # List alredy exists
+                #List alredy exists
                 return jsonify({"Error":"List alredy exists"}), 409
             
         except:
             # Bad request
             return jsonify({"Error":"Bad request"}), 400
 
-        record_created = collection.insert({'name': name,
+        data = {'name': name,
             'user_id': user_id,
             'user': user,
             'date_creation': date_creation,
             'date_update': date_update,
-            'books':books})
-        # Return Id 
-        return jsonify(str(record_created)), 201
+            'books':books}
+
+        record_created = collection.insert(data)
+
+        return jsonify({'name': name,
+            'user_id': user_id,
+            'user': user,
+            'date_creation': date_creation,
+            'date_update': date_update,
+            'books':books}), 201
     except:
         # Error while trying to create the resource
         return "", 500
@@ -104,24 +98,22 @@ def add_book(user_id,name,book):
     except:        
         return "", 500
 
-@app.route("/api/v1/booklist", methods=['GET'])
-def get_all_booklist():
+@app.route("/api/v1/booklist/p/<int:page>", methods=['GET'])
+def get_all_booklist(page):
     """
        Function to get all the list.
        """
     try:        
-        # Return all the records as query string parameters are not available
-        data = collection.find()
+        data = collection.find().skip(int(page*5)).limit(5)
         if data.count() > 0:
-            # Prepare response if the users are found
+            # Prepare response
             return dumps(data),200
         else:
-            # Return empty array if no users are found
-            return jsonify([])
+            return jsonify([]),200
     except:        
         return "", 500
 
-@app.route("/api/v1/booklist/<user_id>", methods=['GET'])
+@app.route("/api/v1/booklist/<int:user_id>", methods=['GET'])
 def get_user_booklist(user_id):
     """
        Function to obtain all the lists of a user.
@@ -129,15 +121,15 @@ def get_user_booklist(user_id):
     try:        
         user_id = int(user_id)
         data = collection.find({"user_id": user_id})
-        if data.count() > 0:            
-            return dumps(data),200
+        if data.count() > 0:  
+            return dumps(),200
         else:
             # Return empty array if no list or user are found
             return "",404
     except:        
         return "", 500
 
-@app.route("/api/v1/booklist/<user_id>/<name>", methods=['GET'])
+@app.route("/api/v1/booklist/<int:user_id>/<name>", methods=['GET'])
 def get_booklist(user_id,name):
     """
        Function to get one list.
@@ -155,27 +147,34 @@ def get_booklist(user_id,name):
 
 
 
-@app.route("/api/v1/booklist/<user_id>/<name>", methods=['PUT'])
+@app.route("/api/v1/booklist/<int:user_id>/<name>", methods=['PUT'])
 def update_booklist(user_id,name):
     """
-       Function to update the user.
+       Function to update a booklist.
        """
     try:
         # Get the value which needs to be updated
         try:
            
-            try:
+            if('new_name' in request.json) :
                 new_name = request.json['new_name']
-            except:
+            else:
                 new_name = name
+
+            if('books' in request.json):
+                books = request.json['books']
+            else:
+                books = []
 
             if not(isinstance(new_name, str)) or not (isinstance(name, str)) or not(isinstance(int(user_id),int)):
                 raise
-            books = request.json['books']
+
             for bk in books:
                 if not(isinstance(bk,int)):
                     raise
+
             books = list(set(books))
+
             date_update = str(datetime.datetime.now().time())
             if new_name != name and collection.find({'name': new_name,'user_id': user_id,}).count() > 0:
                 # List alredy exists
@@ -187,10 +186,14 @@ def update_booklist(user_id,name):
 
         # Updating
 
-        records_updated = collection.update_one( {"user_id": int(user_id),"name":str(name)} , {"$set":{'name': new_name,
-            'date_update': date_update,
-            'books':books}})
-        
+        if('books' in request.json):
+            records_updated = collection.update_one( {"user_id": int(user_id),"name":str(name)} , {"$set":{'name': new_name,
+                'date_update': date_update,
+                'books':books}})
+        else:
+            records_updated = collection.update_one( {"user_id": int(user_id),"name":str(name)} , {"$set":{'name': new_name,
+                'date_update': date_update}})
+
         # Check if resource is updated
         if records_updated.matched_count > 0:
             # Prepare the response as resource is updated successfully
@@ -205,11 +208,12 @@ def update_booklist(user_id,name):
         return "", 500
 
 
-@app.route("/api/v1/booklist/<user_id>/<name>", methods=['DELETE'])
+@app.route("/api/v1/booklist/<int:user_id>/<name>", methods=['DELETE'])
 def remove_booklist(user_id,name):
     """
        Function to remove the booklist.
        """
+    print(user_id)
     try:
         # Delete the booklist
 
@@ -220,26 +224,11 @@ def remove_booklist(user_id,name):
             return "", 204
         else:
             # Resource Not found
-            return "Resource Not found", 404
+            return jsonify({"Error":"Resource Not found"}), 404
     except:
         # Error while trying to delete the resource
         # Add message for debugging purpose
         return "", 500
 
 
-@app.errorhandler(404)
-def page_not_found(e):
-    """Send message to the user with notFound 404 status."""
-    # Message to the user
-    message = {
-        "err":
-            {
-                "msg": "This route is currently not supported. Please refer API documentation."
-            }
-    }
-    # Making the message looks good
-    resp = jsonify(message)
-    # Sending OK response
-    resp.status_code = 404
-    # Returning the object
-    return resp
+

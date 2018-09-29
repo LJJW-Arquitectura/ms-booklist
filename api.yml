@@ -16,6 +16,55 @@ produces:
   - application/json
 paths:
 
+  /api/v1/readbook/{user_id}/{book}:
+    post:
+      summary: Add a book to a readed book list of a given user
+      operationId: add_readedbook
+      parameters:
+        - name: user_id
+          in: path
+          description: The user_id of the list to be change
+          required: true
+          type: integer
+        - name: book
+          in: path
+          description: The book_id of the book to add
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Ok
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+        '406':
+            description: Not Acceptable (Invalid Params)
+        '500':
+          description: unexpected error
+  
+  /api/v1/readbook/{user_id}:
+    get:
+      summary: Returns the readed book list of a given user
+      operationId: get_user_readlist
+      parameters:
+        - name: user_id
+          in: path
+          description: The user_id of the readed book lists to be returned
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/ReadList'
+        '404':
+          description: Not Found
+        '406':
+          description: Not Acceptable (Invalid Params)
+        '500':
+          description: unexpected error
+
   /api/v1/booklist:
     post:
       summary: Creates a new BookList
@@ -145,6 +194,7 @@ paths:
           description: Not Found
         '500':
           description: unexpected error
+          
   /api/v1/booklist/{user_id}/{name}/{book}:
     post:
       summary: Add a book to an existing list
@@ -179,6 +229,17 @@ paths:
 
 definitions:
 
+  # ReadList
+  ReadList:
+    type: object
+    properties:
+      user_id:
+        type: string
+      books:
+        type: array
+        items:
+          type: integer
+          
   # BookList
   BookList:
     type: object
