@@ -83,9 +83,17 @@ paths:
           description: Bad Request
         '500':
           description: Internal Server Error
-    get:
+
+  /api/v1/booklist/p/{page}:
+    get: page
       summary: Returns all BookList
       operationId: get_all_booklist
+      parameters:
+        - name: page
+          in: path
+          description: The page of the request
+          required: true
+          type: integer
       responses:
         '200':
           description: Ok

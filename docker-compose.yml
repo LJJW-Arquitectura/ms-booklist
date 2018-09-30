@@ -1,14 +1,14 @@
 version: "2.1"
 services:
-  frontend:
+  booklist-ms:
     build: .
     command: python run-app.py
     ports: 
       - "3001:3001"
     links:
-      - datastore
+      - booklist-db
 
-  datastore:
+  booklist-db:
     image: mongo:3.0.2
     ports: 
       - "27017:27017"
