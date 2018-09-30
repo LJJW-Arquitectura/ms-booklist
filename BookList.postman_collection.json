@@ -1,0 +1,245 @@
+{
+	"info": {
+		"_postman_id": "d9c97183-d916-49bb-ba76-834476f73d8b",
+		"name": "BookList",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Obtener todas las listas",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 1,\n\t\"name\": \"Jonh\",\n\t\"email\": \"Jonh@sd\",\n\t\"phone\": \"1358438\",\n\t\"location\": \"Colombia\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}:{{puerto}}/api/v1/booklist/p/0",
+					"host": [
+						"{{url}}"
+					],
+					"port": "{{puerto}}",
+					"path": [
+						"api",
+						"v1",
+						"booklist",
+						"p",
+						"0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener Libros leidos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{url}}:{{puerto}}/api/v1/readbook/1",
+					"host": [
+						"{{url}}"
+					],
+					"port": "{{puerto}}",
+					"path": [
+						"api",
+						"v1",
+						"readbook",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todas las listas de un Usuario",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{url}}:{{puerto}}/api/v1/booklist/1",
+					"host": [
+						"{{url}}"
+					],
+					"port": "{{puerto}}",
+					"path": [
+						"api",
+						"v1",
+						"booklist",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener una Lista",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{url}}:{{puerto}}/api/v1/booklist/1/Sci-fi",
+					"host": [
+						"{{url}}"
+					],
+					"port": "{{puerto}}",
+					"path": [
+						"api",
+						"v1",
+						"booklist",
+						"1",
+						"Sci-fi"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar un libro leido",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{url}}:{{puerto}}/api/v1/readbook/1/5",
+					"host": [
+						"{{url}}"
+					],
+					"port": "{{puerto}}",
+					"path": [
+						"api",
+						"v1",
+						"readbook",
+						"1",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear BookList",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Sci-fi\",\n\t\"user\": \"Luis Castro\",\n\t\"user_id\": 1,\n\t\"books\": [1,2,3,4,5]\n}"
+				},
+				"url": {
+					"raw": "{{url}}:{{puerto}}/api/v1/booklist",
+					"host": [
+						"{{url}}"
+					],
+					"port": "{{puerto}}",
+					"path": [
+						"api",
+						"v1",
+						"booklist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar un libro a una Booklist",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{url}}:{{puerto}}/api/v1/booklist/1/Sci-fi/58",
+					"host": [
+						"{{url}}"
+					],
+					"port": "{{puerto}}",
+					"path": [
+						"api",
+						"v1",
+						"booklist",
+						"1",
+						"Sci-fi",
+						"58"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Borrar Booklist",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"$set\": {\n\t\t\"name\": \"Jona\",\n\t\t\"email\": \"Jonh@sd\",\n\t\t\"phone\": \"1358438\",\n\t\t\"location\": \"Colombia\"\n\t}\n}"
+				},
+				"url": {
+					"raw": "{{url}}:{{puerto}}/api/v1/booklist/1/Sci-fi",
+					"host": [
+						"{{url}}"
+					],
+					"port": "{{puerto}}",
+					"path": [
+						"api",
+						"v1",
+						"booklist",
+						"1",
+						"Sci-fi"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Editar Booklist",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"new_name\": \"sdasdsad\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}:{{puerto}}/api/v1/booklist/1/HOLA",
+					"host": [
+						"{{url}}"
+					],
+					"port": "{{puerto}}",
+					"path": [
+						"api",
+						"v1",
+						"booklist",
+						"1",
+						"HOLA"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
