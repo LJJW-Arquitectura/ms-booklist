@@ -65,7 +65,7 @@ def create_booklist():
         # Error while trying to create the resource
         return "", 500
 
-@app.route("/api/v1/booklist/<user_id>/<name>/<book>", methods=['POST'])
+@app.route("/api/v1/booklist/<user_id>/<name>/<book>", methods=['PUT'])
 def add_book(user_id,name,book):
     """
        Function to add a book to a list.

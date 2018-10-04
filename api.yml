@@ -17,7 +17,7 @@ produces:
 paths:
 
   /api/v1/readbook/{user_id}/{book}:
-    post:
+    put:
       summary: Add a book to a readed book list of a given user
       operationId: add_readedbook
       parameters:
@@ -204,7 +204,7 @@ paths:
           description: unexpected error
           
   /api/v1/booklist/{user_id}/{name}/{book}:
-    post:
+    put:
       summary: Add a book to an existing list
       operationId: add_book
       parameters:

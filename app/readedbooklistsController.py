@@ -32,7 +32,7 @@ def get_user_readlist(user_id):
     except:        
         return "", 500
 
-@app.route("/api/v1/readbook/<int:user_id>/<int:book>", methods=['POST'])
+@app.route("/api/v1/readbook/<int:user_id>/<int:book>", methods=['PUT'])
 def add_book_readlist(user_id,book):
     """
        Function to add a book.
