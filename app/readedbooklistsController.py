@@ -25,7 +25,7 @@ def get_user_readlist(user_id):
         user_id = int(user_id)
         data = collection.find({"user_id": user_id})
         if data.count() > 0:
-            return dumps(data),200
+            return dumps(data[0]),200
         else:
             # Return empty array if no list or user are found
             return jsonify([]),200

@@ -98,13 +98,17 @@ def add_book(user_id,name,book):
     except:        
         return "", 500
 
-@app.route("/api/v1/booklist/p/<int:page>", methods=['GET'])
-def get_all_booklist(page):
+#@app.route("/api/v1/booklist/p/<int:page>", methods=['GET'])
+#def get_all_booklist(page):
+
+@app.route("/api/v1/booklist/", methods=['GET'])
+def get_all_booklist():
     """
        Function to get all the list.
        """
     try:        
-        data = collection.find().skip(int(page*5)).limit(5)
+        #data = collection.find().skip(int(page*5)).limit(5)
+        data = collection.find()
         if data.count() > 0:
             # Prepare response
             return dumps(data),200
@@ -122,7 +126,7 @@ def get_user_booklist(user_id):
         user_id = int(user_id)
         data = collection.find({"user_id": user_id})
         if data.count() > 0:  
-            return dumps(),200
+            return dumps(data),200
         else:
             # Return empty array if no list or user are found
             return "",404
@@ -138,7 +142,7 @@ def get_booklist(user_id,name):
         user_id = int(user_id)
         data = collection.find({"user_id": user_id,"name":name})
         if data.count() > 0:
-            return dumps(data),200
+            return dumps(data[0]),200
         else:
             # Return empty array if no list are found
             return "",406
@@ -147,8 +151,8 @@ def get_booklist(user_id,name):
 
 
 
-@app.route("/api/v1/booklist/<int:user_id>/<name>", methods=['PUT'])
-def update_booklist(user_id,name):
+@app.route("/api/v1/booklist/<int:user_id>/<string:_name>", methods=['PUT'])
+def update_booklist(user_id,_name):
     """
        Function to update a booklist.
        """
@@ -156,17 +160,17 @@ def update_booklist(user_id,name):
         # Get the value which needs to be updated
         try:
            
-            if('new_name' in request.json) :
-                new_name = request.json['new_name']
+            if('name' in request.json) :
+                new_name = request.json['name']
             else:
-                new_name = name
+                new_name = _name
 
             if('books' in request.json):
                 books = request.json['books']
             else:
                 books = []
 
-            if not(isinstance(new_name, str)) or not (isinstance(name, str)) or not(isinstance(int(user_id),int)):
+            if not(isinstance(new_name, str)) or not (isinstance(_name, str)) or not(isinstance(int(user_id),int)):
                 raise
 
             for bk in books:
@@ -176,7 +180,7 @@ def update_booklist(user_id,name):
             books = list(set(books))
 
             date_update = str(datetime.datetime.now().time())
-            if new_name != name and collection.find({'name': new_name,'user_id': user_id,}).count() > 0:
+            if new_name != _name and collection.find({'name': new_name,'user_id': user_id,}).count() > 0:
                 # List alredy exists
                 return jsonify({"Error":"Name alredy exists"}), 409
             
@@ -187,11 +191,11 @@ def update_booklist(user_id,name):
         # Updating
 
         if('books' in request.json):
-            records_updated = collection.update_one( {"user_id": int(user_id),"name":str(name)} , {"$set":{'name': new_name,
+            records_updated = collection.update_one( {"user_id": int(user_id),"name":str(_name)} , {"$set":{'name': new_name,
                 'date_update': date_update,
                 'books':books}})
         else:
-            records_updated = collection.update_one( {"user_id": int(user_id),"name":str(name)} , {"$set":{'name': new_name,
+            records_updated = collection.update_one( {"user_id": int(user_id),"name":str(_name)} , {"$set":{'name': new_name,
                 'date_update': date_update}})
 
         # Check if resource is updated
