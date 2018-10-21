@@ -28,7 +28,9 @@ def get_user_readlist(user_id):
             return dumps(data[0]),200
         else:
             # Return empty array if no list or user are found
-            return jsonify([]),200
+            data = {"user_id" : user_id,"books": []}
+            record_created = collection.insert(data)
+            return dumps(data),200
     except:        
         return "", 500
 
@@ -43,14 +45,11 @@ def add_book_readlist(user_id,book):
 
         if data.count() > 0:            
             bk = data[0]['books']
-            
             if int(book) in bk:
                 return jsonify({"Error":"Book alredy in the list"}),409
-
             bk.append(int(book))
-
             try:
-                collection_readbooks.update_one({"user_id": user_id},{"$set":{"books":bk}})
+                collection.update_one({"user_id": user_id},{"$set":{"books":bk}})
             except: 
                 # Bad request
                 return jsonify({"Error":"Not Acceptable (Invalid Params)"}), 406
