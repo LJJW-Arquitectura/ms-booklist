@@ -35,7 +35,7 @@ def create_booklist():
                     raise
 
             books = list(set(books))
-            date_creation = str(datetime.datetime.now().time())
+            date_creation = str(datetime.date.today() )
             date_update = date_creation
             
             if collection.find({'name': name,'user_id': user_id,}).count() > 0:
@@ -82,7 +82,7 @@ def add_book(user_id,name,book):
                 return jsonify({"Error":"Book alredy in the list"}),409
 
             bk.append(int(book))
-            date_update = str(datetime.datetime.now().time())
+            date_update = str(datetime.date.today() )
 
             try:
                 collection.update_one({"user_id": user_id,"name":name},{"$set":{"books":bk,"date_update":date_update}})
@@ -179,7 +179,7 @@ def update_booklist(user_id,_name):
 
             books = list(set(books))
 
-            date_update = str(datetime.datetime.now().time())
+            date_update = str(datetime.date.today())
             if new_name != _name and collection.find({'name': new_name,'user_id': user_id,}).count() > 0:
                 # List alredy exists
                 return jsonify({"Error":"Name alredy exists"}), 409

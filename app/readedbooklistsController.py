@@ -7,7 +7,7 @@ from flask import request, jsonify
 import json
 import ast
 import imp
-import datetime
+from datetime import datetime
 
 # Select the database
 db = client.restfulapi
