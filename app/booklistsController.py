@@ -129,7 +129,7 @@ def get_user_booklist(user_id):
             return dumps(data),200
         else:
             # Return empty array if no list or user are found
-            return "",404
+            return jsonify([]),200
     except:        
         return "", 500
 
